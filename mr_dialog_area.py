@@ -2,9 +2,14 @@
 # 
 #
 def stop_casting(vc,vop):
+    ''' # language: en
     vt       = 'Stop casting' # vt: view text
     vid_type = VID_TYPE_TEXT
     return view_op(vc,vt,vid_type,vop)
+    '''
+    vn       = 'button1' # vn: view name
+    vid_type = VID_TYPE_NAME
+    return view_op(vc,vn,vid_type,vop,vpackage='android')
 
 #
 # 

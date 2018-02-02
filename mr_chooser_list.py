@@ -25,16 +25,17 @@ def find_device(vc,vop,arg):
             if view:
                 break
 
-   if view:
-       print '[INFO] "%s" found in "%s"' %(arg,vn)
-       if vop == VOP_TOUCH:
-           view.touch()
-       else:
-           print '[ERROR] vop:"%s" is not supported in find_device()!' %(vop)
-       return True
-   else:
-       print '[ERROR] "%s" not found in "%s"' %(arg,vn)
-       return False
+    if view:
+        print '[INFO] "%s" found in "%s"' %(arg,vn)
+        if vop == VOP_TOUCH:
+            view.touch()
+            return True
+        else:
+            print '[ERROR] vop:"%s" is not supported in find_device()!' %(vop)
+            return False
+    else:
+        print '[ERROR] "%s" not found in "%s"' %(arg,vn)
+        return False
 
 #
 #

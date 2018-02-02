@@ -68,6 +68,9 @@ uidevice = UiDevice(vc)
 if useuiautomatorhelper:
     vcsleep(2) # workarround to avoid the message "WARNING: xxx not found. Perhaps the device has hardware buttons. "
 
+# sleep 2sec may be better, my smartphone has vc.dump error in next call
+vcsleep(2)
+
 # check if mr_chooser_list/mr_dialog_area is opened
 ismch = mr_chooser_list(vc,SCMD_IS_MR_CHOOSER_LIST,VOP_EXIST) # ismcl: is mr_chooser_list
 ismda = mr_dialog_area(vc,SCMD_IS_MR_DIALOG_AREA,VOP_EXIST)   # ismda: is mr_dialog_area
@@ -88,6 +91,10 @@ while True:
     ret = main_content(vc,SCMD_CAST_ROUTE_MENU_ITEM,VOP_ENABLED)
     if not ret:
         print '[ERROR] "cast_route_menu_item" is not enabled!'
+        # Xperia       Z3(Android v5.0.2) TuneIn Radio v.19.2.1 (230569)
+        # second time in this loop, cast_route_menu_item is always be disable
+        # Xpeira Table Z2(Android v4.4.2) TuneIn Radio v.16.5(13485)
+        # always works fine
         sys.exit()
 
     print '[INFO] touch "cast_route_menu_item"'
@@ -100,6 +107,7 @@ while True:
         print '[INFO] "mr_chooser_list" is opend!'
 
         print '[INFO] select "%s" in "mr_chooser_list"' %TGT_DEVICE_DISPLAY_NAME
+        debug()
         ret = mr_chooser_list(vc,SCMD_DEVICE,VOP_TOUCH,TGT_DEVICE_DISPLAY_NAME)
         if not ret:
             print '[ERROR] failed to select device "%s" in "mr_choose_list"' %TGT_DEVICE_DISPLAY_NAME

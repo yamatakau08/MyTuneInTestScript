@@ -49,7 +49,11 @@ def pick_idno(idstr):
 ) = range(0,3)
 
 # vop: view operation
-def view_op(vc,vid,vid_type,vop,debug=True):
+# vpackage: view package
+#           need to select android/package itself
+def view_op(vc,vid,vid_type,vop,debug=True,vpackage=None):
+
+    xvid = None
 
     # check view type no/name/text
     if   vid_type == VID_TYPE_NO:
@@ -61,9 +65,14 @@ def view_op(vc,vid,vid_type,vop,debug=True):
             print '[ERROR] vid_type:%s vid:"%s" is not in the list by getViewsById()!' %(vid_type,xvid)
             return False
     elif vid_type == VID_TYPE_NAME:
-        xvid = package + ":id/" + vid
+        if vpackage:
+            xvid = vpackage + ":id/" + vid
+        else:
+            xvid = package + ":id/" + vid
+
         view = vc.findViewById(xvid)
     elif vid_type == VID_TYPE_TEXT:
+        xvid = vid
         view = vc.findViewWithText(vid)
     else:
         print '[ERROR] vid_type:"%s" for "%s" is not supported!' %(vid_type,xvid)
@@ -85,4 +94,3 @@ def view_op(vc,vid,vid_type,vop,debug=True):
         if debug:
             print '[ERROR] view:"%s" is not found!' %(xvid)
         return False
-        
