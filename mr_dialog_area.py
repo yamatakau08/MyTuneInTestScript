@@ -22,10 +22,10 @@ def cast_control(vc,vop):
 #
 # 
 #
-def is_mr_dialog_area(vc,vop,debug=True):
+def is_mr_dialog_area(vc,vop):
     vn       = 'mr_dialog_area' # vn: view name
     vid_type = VID_TYPE_NAME
-    return view_op(vc,vn,vid_type,vop,debug)
+    return view_op(vc,vn,vid_type,vop,vpackage=None,debug=False)
 
 #
 #
@@ -47,7 +47,7 @@ def mr_dialog_area(vc,scmd,vop,arg=None): # scmd: screen command
     elif scmd == SCMD_DIALOG_CAST_CONTROL:
         return cast_control(vc,vop)
     elif scmd == SCMD_IS_MR_DIALOG_AREA:
-        return is_mr_dialog_area(vc,vop,debug=False)
+        return is_mr_dialog_area(vc,vop)
     elif scmd == SCMD_MR_CLOSE:
         return mr_close(vc,vop)
     else:

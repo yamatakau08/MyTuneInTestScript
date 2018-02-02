@@ -86,6 +86,8 @@ elif ismda:
 else:
     pass
 
+tddn = TGT_DEVICE_DISPLAY_NAME
+
 while True:
     print '[INFO] check if "cast_route_menu_item" is enabled'
     ret = main_content(vc,SCMD_CAST_ROUTE_MENU_ITEM,VOP_ENABLED)
@@ -106,11 +108,10 @@ while True:
     if mr_chooser_list(vc,SCMD_IS_MR_CHOOSER_LIST,VOP_EXIST):
         print '[INFO] "mr_chooser_list" is opend!'
 
-        print '[INFO] select "%s" in "mr_chooser_list"' %TGT_DEVICE_DISPLAY_NAME
-        debug()
-        ret = mr_chooser_list(vc,SCMD_DEVICE,VOP_TOUCH,TGT_DEVICE_DISPLAY_NAME)
+        print '[INFO] select "%s" in "mr_chooser_list"' %tddn
+        ret = mr_chooser_list(vc,SCMD_DEVICE,VOP_TOUCH,tddn)
         if not ret:
-            print '[ERROR] failed to select device "%s" in "mr_choose_list"' %TGT_DEVICE_DISPLAY_NAME
+            print '[ERROR] failed to select device "%s" in "mr_choose_list"' %tddn
             sys.exit()
 
         print '[INFO] touch "cast_route_menu_item"'
