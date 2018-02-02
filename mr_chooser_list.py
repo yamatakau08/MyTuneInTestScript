@@ -1,12 +1,13 @@
 #
 # 
 #
-def find_device(vc,arg,touch=None):
+def find_device(vc,vop,arg):
 
     ATTEMPTS = 4
 
     vn     = 'mr_chooser_list' # vn: view name
     idlist = package + ":id/" + vn
+    view   = None
 
     # refer AndroidViewClient-13.6.2/src/com/dtmilano/android/viewclient.py line 2045
     for i in range(ATTEMPTS):
@@ -14,10 +15,7 @@ def find_device(vc,arg,touch=None):
         if android___id_list.scrollable():
             view = vc.findViewWithText(arg)
             if view:
-                print '"%s" found in "%s"' %(arg,vn)
-                if touch:
-                    view.touch()
-                return True
+                break
             else:
                 android___id_list.uiScrollable.flingForward()
                 vc.sleep(1)
@@ -25,44 +23,39 @@ def find_device(vc,arg,touch=None):
         else:
             view = vc.findViewWithText(arg)
             if view:
-                print '"%s" found in "%s"' %(arg,vn)
-                if touch:
-                    view.touch()
-                return True
-            else:
-                print '[ERROR] "%s" not found in "%s"' %(arg,vn)
-                return False
+                break
 
-    print '[ERROR] "%s" not found in "%s"' %(arg,vn)
-    return False
+   if view:
+       print '[INFO] "%s" found in "%s"' %(arg,vn)
+       if vop == VOP_TOUCH:
+           view.touch()
+       else:
+           print '[ERROR] vop:"%s" is not supported in find_device()!' %(vop)
+       return True
+   else:
+       print '[ERROR] "%s" not found in "%s"' %(arg,vn)
+       return False
 
 #
 #
 #
-def is_mr_chooser_list(vc):
+def is_mr_chooser_list(vc,vop,debug=True):
+    vn       = 'mr_chooser_list' # vn: view name
+    vid_type = VID_TYPE_NAME
+    return view_op(vc,vn,vid_type,vop,debug)
 
-    vn   = 'mr_chooser_list' # vid: view id
-    vid  = package + ":id/" + vn
-    view = vc.findViewById(vid)
-
-    if view:
-        return True
-    else:
-        return False
     
 #
 # main screen dispatch
 #
-def mr_chooser_list(vc,scmd,arg=None): # scmd: screen command
+def mr_chooser_list(vc,scmd,vop,arg=None): # scmd: screen command
 
     vc.dump()
 
-    if scmd == SCMD_FIND_DEVICE:
-        return find_device(vc,arg)
-    elif scmd == SCMD_SELECT_DEVICE:
-        return find_device(vc,arg,touch=True)
+    if   scmd == SCMD_DEVICE:
+        return find_device(vc,vop,arg)
     elif scmd == SCMD_IS_MR_CHOOSER_LIST:
-        return is_mr_chooser_list(vc)
+        return is_mr_chooser_list(vc,vop,debug=False)
     else:
         return False
 

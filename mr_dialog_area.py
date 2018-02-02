@@ -1,75 +1,49 @@
 #
 # 
 #
-def stop_casting(vc):
-    vt = 'Stop casting' # vt: view text
-    view = vc.findViewWithText(vt)
-
-    if view:
-        view.touch()
-        return True
-    else:
-        print '[ERROR] Can\'t find "%s" in mr_dialog_area!"' %vt
-        return False
+def stop_casting(vc,vop):
+    vt       = 'Stop casting' # vt: view text
+    vid_type = VID_TYPE_TEXT
+    return view_op(vc,vt,vid_type,vop)
 
 #
 # 
 #
-def cast_control(vc):
-    vn  = 'dialog_cast_control' # vn: view name
-    vid = package + ":id/" + vn
-    view = vc.findViewById(vid)
-
-    if view:
-        view.touch()
-        return True
-    else:
-        print '[ERROR] %s is not found!' %vn
-        return False
+def cast_control(vc,vop):
+    vn       = 'dialog_cast_control' # vn: view name
+    vid_type = VID_TYPE_NAME
+    return view_op(vc,vn,vid_type,vop)
 
 #
 # 
 #
-def is_mr_dialog_area(vc):
-    vn   = 'mr_dialog_area' # vn: view name
-    vid  = package + ":id/" + vn
-    view = vc.findViewById(vid)
-
-    if view:
-        return True
-    else:
-        return False
+def is_mr_dialog_area(vc,vop,debug=True):
+    vn       = 'mr_dialog_area' # vn: view name
+    vid_type = VID_TYPE_NAME
+    return view_op(vc,vn,vid_type,vop,debug)
 
 #
 #
 #
-def mr_close(vc):
-    vn   = 'mr_close' # vn: view name
-    vid  = package + ":id/" + vn
-    view = vc.findViewById(vid)
-
-    if view:
-        view.touch()
-        return True
-    else:
-        print '[ERROR] Can\'t find "%s" in mr_dialog_area!' %vn
-        return False
+def mr_close(vc,vop):
+    vn       = 'mr_close' # vn: view name
+    vid_type = VID_TYPE_NAME
+    return view_op(vc,vn,vid_type,vop)
 
 #
 # main screen dispatch
 #
-def mr_dialog_area(vc,scmd,arg=None): # scmd: screen command
+def mr_dialog_area(vc,scmd,vop,arg=None): # scmd: screen command
 
     vc.dump()
 
     if   scmd == SCMD_STOP_CASTING:
-        return stop_casting(vc)
+        return stop_casting(vc,vop)
     elif scmd == SCMD_DIALOG_CAST_CONTROL:
-        return cast_control(vc)
+        return cast_control(vc,vop)
     elif scmd == SCMD_IS_MR_DIALOG_AREA:
-        return is_mr_dialog_area(vc)
+        return is_mr_dialog_area(vc,vop,debug=False)
     elif scmd == SCMD_MR_CLOSE:
-        return mr_close(vc)
+        return mr_close(vc,vop)
     else:
         return False
-

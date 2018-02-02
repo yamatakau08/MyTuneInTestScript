@@ -28,20 +28,14 @@ execfile('mr_dialog_area.py')
     SCMD_CAST_ROUTE_MENU_ITEM,
     SCMD_MINI_PLAYER_PLAY_STOP,
 # android.widget.ListView tunein.player:id/mr_chooser_list
-    SCMD_FIND_DEVICE,
-    SCMD_SELECT_DEVICE,
+    SCMD_DEVICE,
     SCMD_IS_MR_CHOOSER_LIST,
 # android.widget.LinearLayout tunein.player:id/mr_dialog_area 
     SCMD_STOP_CASTING,
     SCMD_DIALOG_CAST_CONTROL,
     SCMD_IS_MR_DIALOG_AREA,
     SCMD_MR_CLOSE,
-) = range(0,9) # (0,X) X: total number of elements
-
-(
-    CAST_ROUTE_MENU_ITEM_ENABLED,
-    CAST_ROUTE_MENU_ITEM_TOUCH,
-) = range(0,2)
+) = range(0,8) # (0,X) X: total number of elements
 
 #
 # following is main
@@ -72,11 +66,11 @@ uidevice = UiDevice(vc)
 # uidevice.openQuickSettingsSettings()
 
 if useuiautomatorhelper:
-    vcsleep(2) # workarround to avoid "WARNING: xxx not found. Perhaps the device has hardware buttons. "
+    vcsleep(2) # workarround to avoid the message "WARNING: xxx not found. Perhaps the device has hardware buttons. "
 
 # check if mr_chooser_list/mr_dialog_area is opened
-ismch = mr_chooser_list(vc,SCMD_IS_MR_CHOOSER_LIST) # ismcl: is mr_chooser_list
-ismda = mr_dialog_area(vc,SCMD_IS_MR_DIALOG_AREA)   # ismda: is mr_dialog_area
+ismch = mr_chooser_list(vc,SCMD_IS_MR_CHOOSER_LIST,VOP_EXIST) # ismcl: is mr_chooser_list
+ismda = mr_dialog_area(vc,SCMD_IS_MR_DIALOG_AREA,VOP_EXIST)   # ismda: is mr_dialog_area
 
 if   ismch:
     print '[INFO] "mr_chooser_list" is opened'
@@ -85,46 +79,46 @@ if   ismch:
 elif ismda:
     print '[INFO] "mr_dialog_area" is opened'
     print '[INFO] close "mr_dialog_area"'
-    mr_dialog_area(vc,SCMD_MR_CLOSE)
+    mr_dialog_area(vc,SCMD_MR_CLOSE,VOP_TOUCH)
 else:
     pass
 
 while True:
     print '[INFO] check if "cast_route_menu_item" is enabled'
-    ret = main_content(vc,SCMD_CAST_ROUTE_MENU_ITEM,CAST_ROUTE_MENU_ITEM_ENABLED)
+    ret = main_content(vc,SCMD_CAST_ROUTE_MENU_ITEM,VOP_ENABLED)
     if not ret:
         print '[ERROR] "cast_route_menu_item" is not enabled!'
         sys.exit()
 
     print '[INFO] touch "cast_route_menu_item"'
-    ret = main_content(vc,SCMD_CAST_ROUTE_MENU_ITEM,CAST_ROUTE_MENU_ITEM_TOUCH)
+    ret = main_content(vc,SCMD_CAST_ROUTE_MENU_ITEM,VOP_TOUCH)
     if not ret:
         print '[ERROR] failed to toch "cast_route_menu_item"'
         sys.exit()
 
-    if mr_chooser_list(vc,SCMD_IS_MR_CHOOSER_LIST):
+    if mr_chooser_list(vc,SCMD_IS_MR_CHOOSER_LIST,VOP_EXIST):
         print '[INFO] "mr_chooser_list" is opend!'
 
         print '[INFO] select "%s" in "mr_chooser_list"' %TGT_DEVICE_DISPLAY_NAME
-        ret = mr_chooser_list(vc,SCMD_SELECT_DEVICE,TGT_DEVICE_DISPLAY_NAME)
+        ret = mr_chooser_list(vc,SCMD_DEVICE,VOP_TOUCH,TGT_DEVICE_DISPLAY_NAME)
         if not ret:
             print '[ERROR] failed to select device "%s" in "mr_choose_list"' %TGT_DEVICE_DISPLAY_NAME
             sys.exit()
 
         print '[INFO] touch "cast_route_menu_item"'
-        ret = main_content(vc,SCMD_CAST_ROUTE_MENU_ITEM,CAST_ROUTE_MENU_ITEM_TOUCH)
+        ret = main_content(vc,SCMD_CAST_ROUTE_MENU_ITEM,VOP_TOUCH)
         if not ret:
             print '[ERROR] fail touch cast_route_menu_item!'
             sys.exit()
 
-    elif mr_dialog_area(vc,SCMD_IS_MR_DIALOG_AREA): # already in casting
+    elif mr_dialog_area(vc,SCMD_IS_MR_DIALOG_AREA,VOP_EXIST): # already in casting
         print '[INFO] "mr_dialog_area" is opend!'
     else:
         print '[ERROR] unknow what dialog is showing!'
         sys.exit()
 
     print '[INFO] touch "dialog_cast_control" in "mr_dialog_area"'
-    ret = mr_dialog_area(vc,SCMD_DIALOG_CAST_CONTROL)
+    ret = mr_dialog_area(vc,SCMD_DIALOG_CAST_CONTROL,VOP_TOUCH)
     if not ret:
         print '[INFO] fail touch "dialog_cast_control"'
         sys.exit()
@@ -132,7 +126,7 @@ while True:
     vcsleep(15)
 
     print '[INFO] touch "dialog_cast_control" in "mr_dialog_area"'
-    ret = mr_dialog_area(vc,SCMD_DIALOG_CAST_CONTROL)
+    ret = mr_dialog_area(vc,SCMD_DIALOG_CAST_CONTROL,VOP_TOUCH)
     if not ret:
         print '[INFO] fail touch "dialog_cast_control"'
         sys.exit()
@@ -141,9 +135,14 @@ while True:
 
     str = 'stop_casting'
     print '[INFO] touch "%s" in "mr_dialog_area"' %str
-    ret = mr_dialog_area(vc,SCMD_STOP_CASTING)
+    ret = mr_dialog_area(vc,SCMD_STOP_CASTING,VOP_TOUCH)
     if not ret:
         print '[ERROR] failed to touch "%s"!' %str
         sys.exit()
 
     vcsleep(3)        
+
+if useuiautomatorhelper:
+    # to quit appropriately
+    # if it's not called the following, command prompt never appear.
+    vc.uiAutomatorHelper.quit()

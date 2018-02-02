@@ -31,3 +31,58 @@ def pick_idno(idstr):
             return False
     else:
         return False
+
+#
+#
+#
+# vid_type
+(
+    VID_TYPE_NO,
+    VID_TYPE_NAME,
+    VID_TYPE_TEXT,
+) = range(0,3)
+
+(
+    VOP_TOUCH,
+    VOP_ENABLED,
+    VOP_EXIST,
+) = range(0,3)
+
+# vop: view operation
+def view_op(vc,vid,vid_type,vop,debug=True):
+
+    # check view type no/name/text
+    if   vid_type == VID_TYPE_NO:
+        vmap = vc.getViewsById()
+        xvid = 'id/no_id/' + vid
+        if vmap.has_key(xvid):
+            view = vmap[xvid]
+        else:
+            print '[ERROR] vid_type:%s vid:"%s" is not in the list by getViewsById()!' %(vid_type,xvid)
+            return False
+    elif vid_type == VID_TYPE_NAME:
+        xvid = package + ":id/" + vid
+        view = vc.findViewById(xvid)
+    elif vid_type == VID_TYPE_TEXT:
+        view = vc.findViewWithText(vid)
+    else:
+        print '[ERROR] vid_type:"%s" for "%s" is not supported!' %(vid_type,xvid)
+        return False
+
+    # check if view is exist
+    if view:
+        if   vop == VOP_TOUCH:
+            view.touch()
+            return True
+        elif vop == VOP_ENABLED:
+            return view.enabled()
+        elif vop == VOP_EXIST:
+            return True
+        else:
+            print '[INFO] "%s" for "%s" is not supported!' %(vop_type,xvid)
+            return True
+    else:
+        if debug:
+            print '[ERROR] view:"%s" is not found!' %(xvid)
+        return False
+        
